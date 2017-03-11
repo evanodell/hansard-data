@@ -1,4 +1,4 @@
-# hansard-hansard-speeches-and-sentiment
+# Hansard Speeches and Sentiment
 
 [![Donate](https://img.shields.io/badge/Donate-PayPal-blue.svg)](paypal.me/EvanOdell)
 [![GitHub tag](https://img.shields.io/github/tag/strongloop/express.svg?style=flat-square)]()
