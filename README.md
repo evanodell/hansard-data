@@ -1,7 +1,7 @@
 # Hansard Speeches and Sentiment
 
 
-[![GitHub tag](https://img.shields.io/github/tag/strongloop/express.svg?style=flat-square)]()
+[![GitHub tag](https://img.shields.io/github/tag/strongloop/express.svg?style=flat-square)](https://github.com/EvanOdell/hansard-data)
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.376839.svg)](https://doi.org/10.5281/zenodo.376839)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
