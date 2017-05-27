@@ -1,6 +1,6 @@
 # Hansard Speeches and Sentiment
 [![GitHub tag](https://img.shields.io/github/tag/evanodell/hansard-data.svg)](https://github.com/evanodell/hansard-data)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.376839.svg)](https://doi.org/10.5281/zenodo.376839)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.583434.svg)](https://doi.org/10.5281/zenodo.583434)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
 Repository for a public dataset of speeches in the Hansard. The dataset provides information on each speech of ten words or longer, made in the House of Commons between 1980 and 2016, with information on the speaking MP, their party, gender and age at the time of the speech. The dataset also includes all speeches of ten words made from 1936 to 1980, for a total of 4,212,134 speeches and 773,585,770 words. More information on the dataset is available [here](http://evanodell.com/datasets/hansard-data/). The dataset itself can be accessed through [Zenodo](http://doi.org/10.5281/zenodo.376839).
