@@ -30,14 +30,14 @@ rm(senti_df)
 gc()
 
 system.time(crossers <- crossers %>% left_join(switchers))
-            
-crossers$party2 <- ifelse(crossers$crossing_one_date <= crossers$speech_date, 
+
+crossers$party2 <- ifelse(crossers$crossing_one_date <= crossers$speech_date,
                           crossers$crossing_one_to, crossers$crossing_one_from)
 
 crossers$party3 <- ifelse(crossers$crossing_two_date <= crossers$speech_date,
                           crossers$crossing_two_to, crossers$crossing_two_from)
 
-crossers$party4 <- ifelse(crossers$crossing_three_date <= crossers$speech_date, 
+crossers$party4 <- ifelse(crossers$crossing_three_date <= crossers$speech_date,
                           crossers$crossing_three_to, crossers$crossing_three_from)
 
 crossers$party3[is.na(crossers$party3)] <- as.character(crossers$party2[is.na(crossers$party3)])

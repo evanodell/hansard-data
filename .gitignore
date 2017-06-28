@@ -14,8 +14,6 @@
 # Output files from R CMD check
 /*.Rcheck/
 
-# RStudio files
-.Rproj.user/
 
 # produced vignettes
 vignettes/*.html
@@ -33,8 +31,18 @@ vignettes/*.pdf
 *.knit.md
 .Rproj.user
 
-/data
+/data/
 
+/R/12_updates.R
+/R/13_duplicates.R
+/R/14_extra_code.R
 
+/xmldata/
 
+/emotion-master/
 
+*.rds
+
+*.csv
+
+*.xlsx

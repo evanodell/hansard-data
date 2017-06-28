@@ -138,6 +138,23 @@ debate <- bind_rows(df.list)
 
 rm(df.list)
 
-write_rds(debate, "debate.rds")
+debate$date <-  str_sub(debate$date,1,10)
 
+debate$speech_date <- as.Date(debate$date)
+
+debate$date <- gsub("uk.org.publicwhip/debate/", "", debate$id)
+
+debate$speakerid <- gsub("uk.org.publicwhip/member/", "", debate$speakerid)
+
+debate$person_id <- gsub("uk.org.publicwhip/person/", "", debate$person_id)
+
+debate$date <-  str_sub(debate$date,1,10)
+
+debate$speech_date <- as.Date(debate$date)
+
+debate$date <- NULL
+
+debate$year <- year(debate$speech_date) ### Year variable
+
+write_rds(debate, "debate.rds")
 

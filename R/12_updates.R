@@ -15,47 +15,47 @@ clean_fun <- function(htmlString) { ### Function to strip out HTML
 }
 
 
-  atemp <- list.files(path ="debates/", pattern = paste0("*.xml"))
-  dat <- vector("list", length(atemp))
-  minor_heading_dat <- vector("list", length(atemp))
-  major_heading_dat <- vector("list", length(atemp))
-  oral_heading_dat <- vector("list", length(atemp))
-  pb <- progress_bar$new(total = length(atemp))
+atemp <- list.files(path ="debates/", pattern = paste0("*.xml"))
+dat <- vector("list", length(atemp))
+minor_heading_dat <- vector("list", length(atemp))
+major_heading_dat <- vector("list", length(atemp))
+oral_heading_dat <- vector("list", length(atemp))
+pb <- progress_bar$new(total = length(atemp))
+
+for (i in atemp) {
+  doc <- xmlTreeParse(paste0("debates/",i), useInternalNodes = TRUE)
+  pb$tick()
+  #actual content
+  nodes <- getNodeSet(doc, "//speech")
+  speech <- lapply(nodes, function(x) xmlValue(x))
+  id <- lapply(nodes, function(x) xmlAttrs(x)["id"])
+  hansard_membership_id <- lapply(nodes, function(x) xmlGetAttr(x, "hansard_membership_id", "NA"))
+  speakerid <- lapply(nodes, function(x) xmlGetAttr(x, "speakerid", "NA"))
+  person_id <- lapply(nodes, function(x) xmlGetAttr(x, "person_id", "NA"))
+  speakername <- lapply(nodes, function(x) xmlGetAttr(x, "speakername", "NA"))
+  colnum <- lapply(nodes, function(x) xmlGetAttr(x, "colnum", "NA"))
+  time <- lapply(nodes, function(x) xmlGetAttr(x, "time", "NA"))
+  url <- lapply(nodes, function(x) xmlGetAttr(x, "url", "NA"))
   
-  for (i in atemp) {
-    doc <- xmlTreeParse(paste0("debates/",i), useInternalNodes = TRUE)
-    pb$tick()
-    #actual content
-    nodes <- getNodeSet(doc, "//speech")
-    speech <- lapply(nodes, function(x) xmlValue(x))
-    id <- lapply(nodes, function(x) xmlAttrs(x)["id"])
-    hansard_membership_id <- lapply(nodes, function(x) xmlGetAttr(x, "hansard_membership_id", "NA"))
-    speakerid <- lapply(nodes, function(x) xmlGetAttr(x, "speakerid", "NA"))
-    person_id <- lapply(nodes, function(x) xmlGetAttr(x, "person_id", "NA"))
-    speakername <- lapply(nodes, function(x) xmlGetAttr(x, "speakername", "NA"))
-    colnum <- lapply(nodes, function(x) xmlGetAttr(x, "colnum", "NA"))
-    time <- lapply(nodes, function(x) xmlGetAttr(x, "time", "NA"))
-    url <- lapply(nodes, function(x) xmlGetAttr(x, "url", "NA"))
-    
-    dat[[i]] <- cbind(speech, id, hansard_membership_id, speakerid, person_id, speakername, colnum, time, url)
-    
-  }
+  dat[[i]] <- cbind(speech, id, hansard_membership_id, speakerid, person_id, speakername, colnum, time, url)
   
-  #debate dfs
-  debate <- do.call(rbind.data.frame, dat)
-  
-  char <- c("speech", "id", "hansard_membership_id", "speakerid", "person_id",
-            "speakername", "colnum", "time", "url")
-  
-  debate[char] <- lapply(debate[char], as.character)
-  
-  debate$as_speaker <- grepl(paste(name_match, collapse = "|"), debate$speakername, ignore.case = TRUE)
-  
-  debate$speech <- clean_fun(debate$speech) ### Strip out HTML
-  
-  save_name <- paste0("debate2df.rds")
-  
-  write_rds(debate, path = save_name)
+}
+
+#debate dfs
+debate <- do.call(rbind.data.frame, dat)
+
+char <- c("speech", "id", "hansard_membership_id", "speakerid", "person_id",
+          "speakername", "colnum", "time", "url")
+
+debate[char] <- lapply(debate[char], as.character)
+
+debate$as_speaker <- grepl(paste(name_match, collapse = "|"), debate$speakername, ignore.case = TRUE)
+
+debate$speech <- clean_fun(debate$speech) ### Strip out HTML
+
+save_name <- paste0("debate2df.rds")
+
+write_rds(debate, path = save_name)
 
 
 # Sentiment calculations -----------------------------------------------------------------
@@ -71,8 +71,8 @@ library(stringr)
 library(sentimentr)
 library(progress)
 library(lubridate)
-  
-  debate2 <-debate
+
+debate2 <-debate
 
 debate2$date <- gsub("uk.org.publicwhip/debate/", "", debate2$id)
 
@@ -105,223 +105,223 @@ atemp <- list.files(pattern = "2017df.rds")
 # Looping ---------------------
 
 df <- debate2
-  
+
 ### Remove as_speaker calculations from here
 
 system.time(
   afinn_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = afinn))
 )
-  names(afinn_vector)[names(afinn_vector) == "ave_sentiment"] <- "afinn_sentiment"
-  
-  names(afinn_vector)[names(afinn_vector) == "sd"] <- "afinn_sd"
-  
-  system.time(
-  jockers_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_jockers))
-  )
-  
-  names(jockers_vector)[names(jockers_vector) == "ave_sentiment"] <- "jockers_sentiment"
-  
-  names(jockers_vector)[names(jockers_vector) == "sd"] <- "jockers_sd"
-  
-  system.time(
-  nrc_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_nrc))
-  )
-  
-  names(nrc_vector)[names(nrc_vector) == "ave_sentiment"] <- "nrc_sentiment"
-  
-  names(nrc_vector)[names(nrc_vector) == "sd"] <- "nrc_sd"
-  
-  system.time(
-  sentiword_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_sentiword))
-  )
-  
-  names(sentiword_vector)[names(sentiword_vector) == "ave_sentiment"] <- "sentiword_sentiment"
-  
-  names(sentiword_vector)[names(sentiword_vector) == "sd"] <- "sentiword_sd"
-  
-  system.time(
-  hu_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_huliu))
-  )
-  
-  names(hu_vector)[names(hu_vector) == "ave_sentiment"] <- "hu_sentiment"
-  
-  names(hu_vector)[names(hu_vector) == "sd"] <- "hu_sd"
-  
-  senti_full <- df %>% 
-    left_join(afinn_vector, by = c("id", "hansard_membership_id","speech_date", "year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
-    left_join(jockers_vector, by = c("id", "hansard_membership_id","speech_date","year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>% 
-    left_join(nrc_vector, by = c("id", "hansard_membership_id","speech_date","year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
-    left_join(sentiword_vector, by = c("id", "hansard_membership_id","year", "speech_date","speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
-    left_join(hu_vector, by = c("id","hansard_membership_id", "speech_date","year", "speakerid", "person_id", "speakername", "colnum", "time", "url", "as_speaker"))
-  
-  #senti_full <- senti_full[senti_full$word_count.y >= 10, ]
-  
-  senti_full <- senti_full[, c("speech", "id","hansard_membership_id","speech_date", "year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker", "word_count.y", "afinn_sentiment", "afinn_sd", "jockers_sentiment", "jockers_sd", "nrc_sentiment", "nrc_sd", "sentiword_sentiment", "sentiword_sd", "hu_sentiment", "hu_sd")]
-  
-  save_name <- paste0("update.rds")
-  
-  write_rds(senti_full, path = save_name)
-  
-  debate2 <- senti_full
-  
-  names_df <- read_csv("~/Documents/GitHub/hansard-data/data/names.csv", 
-                       col_types = cols(date_of_birth = col_date(format = "%Y-%m-%d"), gender = col_factor(levels = c("F","M")), house_end_date = col_date(format = "%Y-%m-%d"), house_start_date = col_date(format = "%Y-%m-%d")))
-  
-  names_df$mnis_id <- as.character(names_df$mnis_id)
-  
-  debate2$speakername[debate2$speakername=="John Martin McDonnell"] <- "John McDonnell"
-  
-  debate2$speakername[debate2$speakername=="Steve McCabe"] <- "Stephen McCabe"
-  
-  debate2$speakername[debate2$speakername=="Bill Cash"] <- "William Cash"
-  
-  debate2$speakername[debate2$speakername=="Chris Leslie"] <- "Christopher Leslie"
-  
-  debate2$speakername[debate2$speakername=="Dr Caroline Johnson"] <- "Caroline Johnson"
-  
-  debate2$speakername[debate2$speakername=="Ed Vaizey"] <- "Edward Vaizey"
-  
-  debate2$speakername[debate2$speakername=="Mike Wood"] <- "Mike Wood (Dudley South)"
-  
-  debate2$speakername[debate2$speakername=="Neil Carmichael"] <- "Neil Carmichael (Stroud)"
-  
-  debate2$speakername[debate2$speakername=="Pat McFadden"] <- "Patrick McFadden"
-  
-  debate2$speakername[debate2$speakername=="Rob Flello"] <- "Robert Flello"
-  
-  debate2$speakername[debate2$speakername=="Steve Pound"] <- "Stephen Pound"
-  
-  system.time(debate2 <- debate2 %>% left_join(names_df, by = c("speakername"="proper_name")))
-  
-  debate2$gender <- as.character(debate2$gender)
-  
-  debate2$gender[debate2$gender=="F"] <- "Female"
-  
-  debate2$gender[debate2$gender=="F"] <- "Female"
-  
-  debate2$as_speaker <- ifelse(debate2$mnis_id == 467 |
-                                 debate2$mnis_id == 1705 |
-                                 debate2$mnis_id == 36 |
-                                 debate2$mnis_id == 17, 
-                               TRUE, FALSE)
-  
-  save_name <- paste0("update.rds")
-  
-  write_rds(debate2, path = save_name)
-  
-  
-  
-  #rm(save_name, senti_full, hu_vector, afinn_vector, sentiword_vector, nrc_vector, jockers_vector, df)
+names(afinn_vector)[names(afinn_vector) == "ave_sentiment"] <- "afinn_sentiment"
 
-  # Floor Crossers ------------
-  ### Do on 09-05-2017
-  library(readr)
-  library(dplyr)
-  library(magrittr)
-  
-  system.time(
-    senti_df2 <- read_rds("update.rds")
-  )
-  
-  names(senti_df2)[names(senti_df2)=="speakername"] <- "proper_name"
-  
-  switchers <- read_csv("data/switchers.csv", col_types = cols(crossing_one_date = col_date(format = "%Y-%m-%d"),
-                                                               crossing_three_date = col_date(format = "%Y-%m-%d"), crossing_two_date = col_date(format = "%Y-%m-%d")))
-  
-  switchers$crossing_one_date[is.na(switchers$crossing_one_date)] <- Sys.Date()
-  switchers$crossing_two_date[is.na(switchers$crossing_two_date)] <- Sys.Date()
-  switchers$crossing_three_date[is.na(switchers$crossing_three_date)] <- Sys.Date()
-  
-  switchers$mnis_id <- as.character(switchers$mnis_id)
-  
-  senti_df2$mnis_id <- as.character(senti_df2$mnis_id)
-  
-  senti_df2$switch_match <- (senti_df2$mnis_id %in% switchers$mnis_id)
-  
-  crossers <- subset(senti_df2, switch_match == TRUE)
-  
-  crossers$proper_name <- as.character(crossers$proper_name)
-  
-  stayers <- subset(senti_df2, switch_match == FALSE)
-  
-  rm(senti_df2)
-  
-  gc()
-  
-  system.time(crossers <- crossers %>% left_join(switchers))
-  
-  crossers$party2 <- ifelse(crossers$crossing_one_date <= crossers$speech_date, 
-                            crossers$crossing_one_to, crossers$crossing_one_from)
-  
-  crossers$party3 <- ifelse(crossers$crossing_two_date <= crossers$speech_date,
-                            crossers$crossing_two_to, crossers$crossing_two_from)
-  
-  crossers$party4 <- ifelse(crossers$crossing_three_date <= crossers$speech_date, 
-                            crossers$crossing_three_to, crossers$crossing_three_from)
-  
-  crossers$party3[is.na(crossers$party3)] <- as.character(crossers$party2[is.na(crossers$party3)])
-  crossers$party4[is.na(crossers$party4)] <- as.character(crossers$party3[is.na(crossers$party4)])
-  
-  pat1 <- c("party4","party2","party3","party")
-  
-  crossers[pat1] <- lapply(crossers[pat1], factor)
-  
-  #summary(crossers)
-  
-  crossers$party <- crossers$party4
-  
-  dropping <- c("party4","party2","party3","proper_name.y", "crossing_one_date", "crossing_one_from", "crossing_one_to", "crossing_two_date", "crossing_two_from", "crossing_two_to", "crossing_three_date", "crossing_three_from", "crossing_three_to")
-  
-  crossers <- crossers[,!names(crossers) %in% dropping]
-  
-  names(crossers) == names(stayers)
-  
-  crossers2 <- crossers
-  
-  crossers2$speech <- NULL
-  
-  write_csv(crossers2, "crossers2.csv")
-  
-  senti_df2 <- bind_rows(crossers, stayers)
-  
-  senti_df_nrow_crossed <- nrow(senti_df)
-  
-  rm(crossers,crossers2, stayers, switchers,dropping,fac1,pat1,senti_df_nrow,senti_post2_nrow,senti_df_nrow_crossed)
-  
-  gc()
-  
-  senti_df2$switch_match <- NULL
-  
-  senti_df2$gender <- as.character(senti_df2$gender)
-  
-  senti_df2$gender[senti_df2$gender=="M"] <- "Male"
-  
-  senti_df2$gender[senti_df2$gender=="F"] <- "Female"
-  
-  senti_df2$gender <- as.factor(senti_df2$gender)
-  
-  senti_df <- senti_df2
-  
-  #summary(senti_df)
-  
-  # party_group  ------------
-  senti_df$party_group <- ifelse(senti_df$party == "Labour" |
-                                   senti_df$party == "Labour (Co-op)", "Labour",
-                                 ifelse(senti_df$party == "Conservative", "Conservative",
-                                        ifelse(senti_df$party == "Liberal Democrat" | senti_df$party == "Social Democrat" | senti_df$party == "Liberal", "Liberal Democrat",
-                                               ifelse(senti_df$party == "Speaker", "Speaker", "Other"))))
-  
-  senti_df$ministry <- "May"
-  senti_df$government <- ifelse(senti_df$party_group == "Conservative",
-                                "Government", "Opposition")
-  
-  system.time(
-    write_rds(senti_df, "senti_df2.rds")
-  )
-  
-  update <- read_rds("senti_df2.rds")
-  
-  system.time(
-    senti_df <- read_rds("senti_df.rds")
-  )
+names(afinn_vector)[names(afinn_vector) == "sd"] <- "afinn_sd"
+
+system.time(
+  jockers_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_jockers))
+)
+
+names(jockers_vector)[names(jockers_vector) == "ave_sentiment"] <- "jockers_sentiment"
+
+names(jockers_vector)[names(jockers_vector) == "sd"] <- "jockers_sd"
+
+system.time(
+  nrc_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_nrc))
+)
+
+names(nrc_vector)[names(nrc_vector) == "ave_sentiment"] <- "nrc_sentiment"
+
+names(nrc_vector)[names(nrc_vector) == "sd"] <- "nrc_sd"
+
+system.time(
+  sentiword_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_sentiword))
+)
+
+names(sentiword_vector)[names(sentiword_vector) == "ave_sentiment"] <- "sentiword_sentiment"
+
+names(sentiword_vector)[names(sentiword_vector) == "sd"] <- "sentiword_sd"
+
+system.time(
+  hu_vector <- with(df, sentiment_by(speech, list(id, hansard_membership_id, speech_date, year, speakerid, person_id, speakername, colnum, time, url, as_speaker), polarity_dt = lexicon::hash_sentiment_huliu))
+)
+
+names(hu_vector)[names(hu_vector) == "ave_sentiment"] <- "hu_sentiment"
+
+names(hu_vector)[names(hu_vector) == "sd"] <- "hu_sd"
+
+senti_full <- df %>% 
+  left_join(afinn_vector, by = c("id", "hansard_membership_id","speech_date", "year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
+  left_join(jockers_vector, by = c("id", "hansard_membership_id","speech_date","year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>% 
+  left_join(nrc_vector, by = c("id", "hansard_membership_id","speech_date","year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
+  left_join(sentiword_vector, by = c("id", "hansard_membership_id","year", "speech_date","speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker")) %>%
+  left_join(hu_vector, by = c("id","hansard_membership_id", "speech_date","year", "speakerid", "person_id", "speakername", "colnum", "time", "url", "as_speaker"))
+
+#senti_full <- senti_full[senti_full$word_count.y >= 10, ]
+
+senti_full <- senti_full[, c("speech", "id","hansard_membership_id","speech_date", "year", "speakerid", "person_id", "speakername",  "colnum", "time", "url", "as_speaker", "word_count.y", "afinn_sentiment", "afinn_sd", "jockers_sentiment", "jockers_sd", "nrc_sentiment", "nrc_sd", "sentiword_sentiment", "sentiword_sd", "hu_sentiment", "hu_sd")]
+
+save_name <- paste0("update.rds")
+
+write_rds(senti_full, path = save_name)
+
+debate2 <- senti_full
+
+names_df <- read_csv("~/Documents/GitHub/hansard-data/data/names.csv", 
+                     col_types = cols(date_of_birth = col_date(format = "%Y-%m-%d"), gender = col_factor(levels = c("F","M")), house_end_date = col_date(format = "%Y-%m-%d"), house_start_date = col_date(format = "%Y-%m-%d")))
+
+names_df$mnis_id <- as.character(names_df$mnis_id)
+
+debate2$speakername[debate2$speakername=="John Martin McDonnell"] <- "John McDonnell"
+
+debate2$speakername[debate2$speakername=="Steve McCabe"] <- "Stephen McCabe"
+
+debate2$speakername[debate2$speakername=="Bill Cash"] <- "William Cash"
+
+debate2$speakername[debate2$speakername=="Chris Leslie"] <- "Christopher Leslie"
+
+debate2$speakername[debate2$speakername=="Dr Caroline Johnson"] <- "Caroline Johnson"
+
+debate2$speakername[debate2$speakername=="Ed Vaizey"] <- "Edward Vaizey"
+
+debate2$speakername[debate2$speakername=="Mike Wood"] <- "Mike Wood (Dudley South)"
+
+debate2$speakername[debate2$speakername=="Neil Carmichael"] <- "Neil Carmichael (Stroud)"
+
+debate2$speakername[debate2$speakername=="Pat McFadden"] <- "Patrick McFadden"
+
+debate2$speakername[debate2$speakername=="Rob Flello"] <- "Robert Flello"
+
+debate2$speakername[debate2$speakername=="Steve Pound"] <- "Stephen Pound"
+
+system.time(debate2 <- debate2 %>% left_join(names_df, by = c("speakername"="proper_name")))
+
+debate2$gender <- as.character(debate2$gender)
+
+debate2$gender[debate2$gender=="F"] <- "Female"
+
+debate2$gender[debate2$gender=="F"] <- "Female"
+
+debate2$as_speaker <- ifelse(debate2$mnis_id == 467 |
+                               debate2$mnis_id == 1705 |
+                               debate2$mnis_id == 36 |
+                               debate2$mnis_id == 17, 
+                             TRUE, FALSE)
+
+save_name <- paste0("update.rds")
+
+write_rds(debate2, path = save_name)
+
+
+
+#rm(save_name, senti_full, hu_vector, afinn_vector, sentiword_vector, nrc_vector, jockers_vector, df)
+
+# Floor Crossers ------------
+### Do on 09-05-2017
+library(readr)
+library(dplyr)
+library(magrittr)
+
+system.time(
+  senti_df2 <- read_rds("update.rds")
+)
+
+names(senti_df2)[names(senti_df2)=="speakername"] <- "proper_name"
+
+switchers <- read_csv("data/switchers.csv", col_types = cols(crossing_one_date = col_date(format = "%Y-%m-%d"),
+                                                             crossing_three_date = col_date(format = "%Y-%m-%d"), crossing_two_date = col_date(format = "%Y-%m-%d")))
+
+switchers$crossing_one_date[is.na(switchers$crossing_one_date)] <- Sys.Date()
+switchers$crossing_two_date[is.na(switchers$crossing_two_date)] <- Sys.Date()
+switchers$crossing_three_date[is.na(switchers$crossing_three_date)] <- Sys.Date()
+
+switchers$mnis_id <- as.character(switchers$mnis_id)
+
+senti_df2$mnis_id <- as.character(senti_df2$mnis_id)
+
+senti_df2$switch_match <- (senti_df2$mnis_id %in% switchers$mnis_id)
+
+crossers <- subset(senti_df2, switch_match == TRUE)
+
+crossers$proper_name <- as.character(crossers$proper_name)
+
+stayers <- subset(senti_df2, switch_match == FALSE)
+
+rm(senti_df2)
+
+gc()
+
+system.time(crossers <- crossers %>% left_join(switchers))
+
+crossers$party2 <- ifelse(crossers$crossing_one_date <= crossers$speech_date, 
+                          crossers$crossing_one_to, crossers$crossing_one_from)
+
+crossers$party3 <- ifelse(crossers$crossing_two_date <= crossers$speech_date,
+                          crossers$crossing_two_to, crossers$crossing_two_from)
+
+crossers$party4 <- ifelse(crossers$crossing_three_date <= crossers$speech_date, 
+                          crossers$crossing_three_to, crossers$crossing_three_from)
+
+crossers$party3[is.na(crossers$party3)] <- as.character(crossers$party2[is.na(crossers$party3)])
+crossers$party4[is.na(crossers$party4)] <- as.character(crossers$party3[is.na(crossers$party4)])
+
+pat1 <- c("party4","party2","party3","party")
+
+crossers[pat1] <- lapply(crossers[pat1], factor)
+
+#summary(crossers)
+
+crossers$party <- crossers$party4
+
+dropping <- c("party4","party2","party3","proper_name.y", "crossing_one_date", "crossing_one_from", "crossing_one_to", "crossing_two_date", "crossing_two_from", "crossing_two_to", "crossing_three_date", "crossing_three_from", "crossing_three_to")
+
+crossers <- crossers[,!names(crossers) %in% dropping]
+
+names(crossers) == names(stayers)
+
+crossers2 <- crossers
+
+crossers2$speech <- NULL
+
+write_csv(crossers2, "crossers2.csv")
+
+senti_df2 <- bind_rows(crossers, stayers)
+
+senti_df_nrow_crossed <- nrow(senti_df)
+
+rm(crossers,crossers2, stayers, switchers,dropping,fac1,pat1,senti_df_nrow,senti_post2_nrow,senti_df_nrow_crossed)
+
+gc()
+
+senti_df2$switch_match <- NULL
+
+senti_df2$gender <- as.character(senti_df2$gender)
+
+senti_df2$gender[senti_df2$gender=="M"] <- "Male"
+
+senti_df2$gender[senti_df2$gender=="F"] <- "Female"
+
+senti_df2$gender <- as.factor(senti_df2$gender)
+
+senti_df <- senti_df2
+
+#summary(senti_df)
+
+# party_group  ------------
+senti_df$party_group <- ifelse(senti_df$party == "Labour" |
+                                 senti_df$party == "Labour (Co-op)", "Labour",
+                               ifelse(senti_df$party == "Conservative", "Conservative",
+                                      ifelse(senti_df$party == "Liberal Democrat" | senti_df$party == "Social Democrat" | senti_df$party == "Liberal", "Liberal Democrat",
+                                             ifelse(senti_df$party == "Speaker", "Speaker", "Other"))))
+
+senti_df$ministry <- "May"
+senti_df$government <- ifelse(senti_df$party_group == "Conservative",
+                              "Government", "Opposition")
+
+system.time(
+  write_rds(senti_df, "senti_df2.rds")
+)
+
+update <- read_rds("senti_df2.rds")
+
+system.time(
+  senti_df <- read_rds("senti_df.rds")
+)
 

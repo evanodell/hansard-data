@@ -1,13 +1,13 @@
 # Hansard Speeches and Sentiment
 
 
-[![GitHub tag](https://img.shields.io/github/tag/strongloop/express.svg?style=flat-square)]()
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.376839.svg)](https://doi.org/10.5281/zenodo.376839)
+[![GitHub tag](https://img.shields.io/github/tag/evanodell/hansard-data.svg)](https://github.com/evanodell/hansard-data)
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.780985.svg)](https://doi.org/10.5281/zenodo.780985)
 [![License](http://img.shields.io/:license-mit-blue.svg)](http://doge.mit-license.org)
 
-Repository for a public dataset of speeches in the Hansard. The dataset provides information on each speech of ten words or longer, made in the House of Commons between 1980 and 2016, with information on the speaking MP, their party, gender and age at the time of the speech. The dataset also includes all speeches of ten words made from 1936 to 1980, for a total of 4,212,134 speeches and 773,585,770 words. More information on the dataset is available [here](http://evanodell.com/datasets/hansard-data/). The dataset itself can be accessed through [Zenodo](http://doi.org/10.5281/zenodo.376839).
+Repository for a public dataset of speeches in the Hansard. The dataset provides information on each speech of ten words or longer, made in the House of Commons between 1980 and 2016, with information on the speaking MP, their party, gender and age at the time of the speech. The dataset also includes all speeches of ten words made from 1936 to 1980, for a total of 4,212,134 speeches and 773,585,770 words. More information on the dataset is available [here](https://evanodell.com/projects/datasets/hansard-data/). The dataset itself can be accessed through [Zenodo](http://doi.org/10.5281/zenodo.376839).
 
-The speeches have been classified for sentiment using a total of five libraries from the R packages `sentimentr`, `syuzhet` and `lexicon`. The libraries are:
+The speeches have been classified for sentiment using a total of four libraries from the R package [`lexicon`](https://cran.r-project.org/package=lexicon), one from [`syuzhet`](https://cran.r-project.org/package=syuzhet) and  one from [this paper](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0168843). All six scores used the method from the [`sentimentr`](https://cran.r-project.org/package=sentimentr) package. The libraries are:
 
 1. The [AFINN](http://www2.imm.dtu.dk/pubdb/views/publication_details.php?id=6010) library by Finn Årup Nielsen, labelled `afinn`. The AFINN library was accessed through the [`syuzhet`](https://cran.r-project.org/package=syuzhet) package.
 
@@ -18,6 +18,8 @@ The speeches have been classified for sentiment using a total of five libraries 
 4. The [Sentiwords](http://sentiwordnet.isti.cnr.it/) dataset, created by Stefano Baccianella, Andrea Esuli, and Fabrizio Sebastiani. The Sentiwords library was accessed through the library was accessed through the [`lexicon`](https://cran.r-project.org/package=lexicon) package.
 
 5. The Hu & Liu dataset, by Minqing Hu and Bing Liu, labelled `Hu`. The Hu & Liu library was accessed through the [`sentimentr`](https://cran.r-project.org/package=sentimentr) package.
+
+6. A modified version of the [unnamed lexicon](https://github.com/lrheault/emotion) from the paper [_Measuring Emotion in Parliamentary Debates with Automated Textual Analysis_](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0168843), labelled `rheault`. As the method in `sentimentr` does not use distinguish between the same word that can occupy multiple lexical categories, I used the average polarity score assigned to such words.
 
 
 ## Notes
