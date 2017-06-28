@@ -21,7 +21,6 @@ The speeches have been classified for sentiment using a total of four libraries 
 
 6. A modified version of the [unnamed lexicon](https://github.com/lrheault/emotion) from the paper [_Measuring Emotion in Parliamentary Debates with Automated Textual Analysis_](http://journals.plos.org/plosone/article?id=10.1371/journal.pone.0168843), labelled `rheault`. As the method in `sentimentr` does not use distinguish between the same word that can occupy multiple lexical categories, I used the average polarity score assigned to such words.
 
-
 ## Notes
 
 The data used to create this dataset was taken from the [parlparse](https://github.com/mysociety/parlparse) project operated by [They Work For You](https://www.theyworkforyou.com/) and supported by [mySociety](https://www.mysociety.org/).  
@@ -30,4 +29,4 @@ The dataset is licensed under a <a rel="license" href="http://creativecommons.or
 
 The code included in this repository is licensed under an [MIT license](https://github.com/EvanOdell/hansard-speeches-and-sentiment/blob/master/LICENSE).
 
- Please contact me if you find any errors in the dataset. The integrity of the public Hansard record is questionable at times, and while I have improved it, the data is presented 'as is'.
+Please [contact me](mailto:evanodell91@gmail.com) or open an issue here if you find any errors in the dataset. The integrity of the public Hansard record is questionable at times, and while I have improved it, the data is presented 'as is'.
