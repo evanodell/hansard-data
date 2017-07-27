@@ -7,40 +7,28 @@ library(lubridate)
 library(dplyr)
 
 system.time(
-  senti_full <- read_rds("senti_full.rds")
+  debate <- read_rds("debate.rds")
 )
 
-#names(senti_full)
+#names(debate)
 
-senti_full$word_count <- stringi::stri_count_words(senti_full$speech)
+#debate$word_count <- stringi::stri_count_words(debate$speech)
 
-senti_full$speakerid <- gsub("uk.org.publicwhip/member/", "", senti_full$speakerid)
+#summary(debate)
 
-senti_full$person_id <- gsub("uk.org.publicwhip/person/", "", senti_full$person_id)
+debate$month <- month(debate$speech_date)
 
-#summary(senti_full)
+debate$decade <- str_sub(debate$year,1,3)
 
-senti_full <- mutate(senti_full, eo_id = rownames(senti_full))
+debate$decade <- as.factor(debate$decade)
 
-senti_full2 <- senti_full
-
-write_rds(senti_full, "senti_full.rds")
-
-rm(senti_full)
-
-senti_full2$month <- month(senti_full2$speech_date)
-
-senti_full2$decade <- str_sub(senti_full2$year,1,3)
-
-senti_full2$decade <- as.factor(senti_full2$decade)
-
-undf <-  unique(senti_full2[c("hansard_membership_id", "year", "month", "speakerid", "person_id", "speakername")])
+undf <-  unique(debate[c("hansard_membership_id", "year", "month", "speakerid", "person_id", "speakername")])
 
 write_csv(undf, "undf.csv")
 
-senti_full2$speech <- NULL
+debate$speech <- NULL
 
-system.time(split_data <- split(senti_full2, senti_full2$decade)) ### Splitting data variable
+system.time(split_data <- split(debate, debate$decade)) ### Splitting data variable
 
 system.time(all_names <- names(split_data))
 
