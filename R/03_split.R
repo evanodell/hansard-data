@@ -10,25 +10,27 @@ system.time(
   debate <- read_rds("debate.rds")
 )
 
-#names(debate)
+senti_post <- senti_post[senti_post$speaker_name!="NA",]
 
-#debate$word_count <- stringi::stri_count_words(debate$speech)
+#names(senti_post)
 
-#summary(debate)
+#senti_post$word_count <- stringi::stri_count_words(senti_post$speech)
 
-debate$month <- month(debate$speech_date)
+#summary(senti_post)
 
-debate$decade <- str_sub(debate$year,1,3)
+#senti_post$month <- month(senti_post$speech_date)
 
-debate$decade <- as.factor(debate$decade)
+#undf <-  unique(senti_post[c("hansard_membership_id", "year", "month", "speaker_id", "person_id", "speaker_name")])
 
-undf <-  unique(debate[c("hansard_membership_id", "year", "month", "speakerid", "person_id", "speakername")])
+#write_csv(undf, "undf.csv")
 
-write_csv(undf, "undf.csv")
+#senti_post$speech <- NULL
 
-debate$speech <- NULL
+senti_post$decade <- str_sub(senti_post$year,1,3)
 
-system.time(split_data <- split(debate, debate$decade)) ### Splitting data variable
+senti_post$decade <- as.factor(senti_post$decade)
+
+system.time(split_data <- split(senti_post, senti_post$decade)) ### Splitting data variable
 
 system.time(all_names <- names(split_data))
 

@@ -5,8 +5,16 @@ library(dplyr)
 library(magrittr)
 
 system.time(
-  senti_df <- read_rds("senti_post2.rds")
+  senti_post <- read_rds("senti_post.rds")
 )
+
+senti_post <- senti_post[c(1:26)]
+
+names <- read_csv("data/names.csv")
+
+names(names)
+
+senti_post <- left_join(senti_post, names)
 
 switchers <- read_csv("data/switchers.csv", col_types = cols(crossing_one_date = col_date(format = "%Y-%m-%d"),
     crossing_three_date = col_date(format = "%Y-%m-%d"), crossing_two_date = col_date(format = "%Y-%m-%d")))
@@ -15,17 +23,17 @@ switchers$crossing_one_date[is.na(switchers$crossing_one_date)] <- Sys.Date()
 switchers$crossing_two_date[is.na(switchers$crossing_two_date)] <- Sys.Date()
 switchers$crossing_three_date[is.na(switchers$crossing_three_date)] <- Sys.Date()
 
-switchers$mnis_id <- as.character(switchers$mnis_id)
+#switchers$mnis_id <- as.character(switchers$mnis_id)
 
-senti_df$switch_match <- (senti_df$mnis_id %in% switchers$mnis_id)
+senti_post$switch_match <- (senti_post$mnis_id %in% switchers$mnis_id)
 
-crossers <- subset(senti_df, switch_match == TRUE)
+crossers <- subset(senti_post, switch_match == TRUE)
 
-crossers$proper_name <- as.character(crossers$proper_name)
+#crossers$proper_name <- as.character(crossers$proper_name)
 
-stayers <- subset(senti_df, switch_match == FALSE)
+stayers <- subset(senti_post, switch_match == FALSE)
 
-rm(senti_df)
+rm(senti_post)
 
 gc()
 
@@ -57,38 +65,40 @@ crossers <- crossers[,!names(crossers) %in% dropping]
 
 names(crossers) == names(stayers)
 
-crossers2 <- crossers
+#crossers2 <- crossers
 
-crossers2$speech <- NULL
+#crossers2$speech <- NULL
 
-write_csv(crossers2, "crossers2.csv")
+#write_csv(crossers2, "crossers2.csv")
 
-senti_df <- bind_rows(crossers, stayers)
+senti_post <- bind_rows(crossers, stayers)
 
-senti_df_nrow_crossed <- nrow(senti_df)
+senti_post_nrow_crossed <- nrow(senti_post)
 
-rm(crossers,crossers2, stayers, switchers,dropping,fac1,pat1,senti_df_nrow,senti_post2_nrow,senti_df_nrow_crossed)
+rm(crossers,crossers2, stayers, switchers,dropping,fac1,pat1,senti_post_nrow,senti_post2_nrow,senti_post_nrow_crossed)
 
 gc()
 
-senti_df$switch_match <- NULL
+senti_post$switch_match <- NULL
 
-senti_df$gender <- as.character(senti_df$gender)
+senti_post$gender <- as.character(senti_post$gender)
 
-senti_df$gender[senti_df$gender=="M"] <- "Male"
+senti_post$gender[senti_post$gender=="M"] <- "Male"
 
-senti_df$gender[senti_df$gender=="F"] <- "Female"
+senti_post$gender[senti_post$gender=="F"] <- "Female"
 
-senti_df$gender <- as.factor(senti_df$gender)
+senti_post$gender <- as.factor(senti_post$gender)
 
-#summary(senti_df)
+#summary(senti_post)
+
+
 
 # party_group  ------------
-senti_df$party_group <- ifelse(senti_df$party == "Labour" |
-                                  senti_df$party == "Labour (Co-op)", "Labour",
-                                  ifelse(senti_df$party == "Conservative", "Conservative",
-                                         ifelse(senti_df$party == "Liberal Democrat" | senti_df$party == "Social Democrat" | senti_df$party == "Liberal", "Liberal Democrat",
-                                                ifelse(senti_df$party == "Speaker", "Speaker", "Other"))))
+senti_post$party_group <- ifelse(senti_post$party == "Labour" |
+                                  senti_post$party == "Labour (Co-op)", "Labour",
+                                  ifelse(senti_post$party == "Conservative", "Conservative",
+                                         ifelse(senti_post$party == "Liberal Democrat" | senti_post$party == "Social Democrat" | senti_post$party == "Liberal", "Liberal Democrat",
+                                                ifelse(senti_post$party == "Speaker", "Speaker", "Other"))))
 system.time(
-  write_rds(senti_df, "senti_df.rds")
+  write_rds(senti_post, "senti_post.rds")
 )
