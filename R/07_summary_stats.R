@@ -5,13 +5,13 @@ pacman::p_load(openxlsx)
 pacman::p_load(progress)
 
 system.time(
-  hansard_senti_post_V24 <- read_rds("hansard_senti_post_V24.rds")
+  hansard_senti_post_V241 <- read_rds("hansard_senti_post_V241.rds")
 )
 
-hansard_senti_post_V24 <- hansard_senti_post_V24[is.na(hansard_senti_post_V24$government)==FALSE,]
+hansard_senti_post_V241 <- hansard_senti_post_V241[is.na(hansard_senti_post_V241$government)==FALSE,]
 
 ## By MP --------
-senti_mp <- group_by(hansard_senti_post_V24, mnis_id, proper_name)
+senti_mp <- group_by(hansard_senti_post_V241, mnis_id, proper_name)
 
 system.time(
   mp_senti_mean <- summarise(senti_mp,
@@ -44,12 +44,12 @@ mp_senti_mean$avg_speech_length <- mp_senti_mean$tot_words/mp_senti_mean$tot_spe
 
 summary(mp_senti_mean)
 
-write_csv(mp_senti_mean, "summaries/mp-senti-mean-V24.csv")
+write_csv(mp_senti_mean, "summaries/mp-senti-mean-V241.csv")
 
 rm(senti_mp)
 
 ## By Gender --------
-senti_gender <- group_by(hansard_senti_post_V24, gender)
+senti_gender <- group_by(hansard_senti_post_V241, gender)
 
 system.time(
   gender_senti_mean <- summarise(senti_gender,
@@ -82,12 +82,12 @@ gender_senti_mean$avg_speech_length <- gender_senti_mean$tot_words/gender_senti_
 
 summary(gender_senti_mean)
 
-write_csv(gender_senti_mean, "summaries/gender-senti-mean-V24.csv")
+write_csv(gender_senti_mean, "summaries/gender-senti-mean-V241.csv")
 
 rm(senti_gender)
 
 ## By Party --------
-senti_party <- group_by(hansard_senti_post_V24, party)
+senti_party <- group_by(hansard_senti_post_V241, party)
 
 system.time(
   party_senti_mean <- summarise(senti_party,
@@ -120,12 +120,12 @@ party_senti_mean$avg_speech_length <- party_senti_mean$tot_words/party_senti_mea
 
 summary(party_senti_mean)
 
-write_csv(party_senti_mean, "summaries/party-senti-mean-V24.csv")
+write_csv(party_senti_mean, "summaries/party-senti-mean-V241.csv")
 
 rm(senti_party)
 
 ## By Party Group --------
-senti_party_group <- group_by(hansard_senti_post_V24, party_group)
+senti_party_group <- group_by(hansard_senti_post_V241, party_group)
 
 system.time(
   party_group_senti_mean <- summarise(senti_party_group,
@@ -158,13 +158,13 @@ party_group_senti_mean$avg_speech_length <- party_group_senti_mean$tot_words/par
 
 summary(party_group_senti_mean)
 
-write_csv(party_group_senti_mean, "summaries/party-group-senti-mean-V24.csv")
+write_csv(party_group_senti_mean, "summaries/party-group-senti-mean-V241.csv")
 
 ## Government/Opposition --------
 
 rm(senti_party_group)
 
-senti_gov <- group_by(hansard_senti_post_V24, government)
+senti_gov <- group_by(hansard_senti_post_V241, government)
 
 system.time(
   gov_senti_mean <- summarise(senti_gov,
@@ -197,14 +197,14 @@ gov_senti_mean$avg_speech_length <- gov_senti_mean$tot_words/gov_senti_mean$tot_
 
 summary(gov_senti_mean)
 
-write_csv(gov_senti_mean, "summaries/gov-senti-mean-V24.csv")
+write_csv(gov_senti_mean, "summaries/gov-senti-mean-V241.csv")
 
 rm(senti_gov)
 
 
 ## Ministry --------
 
-senti_ministry <- group_by(hansard_senti_post_V24, ministry)
+senti_ministry <- group_by(hansard_senti_post_V241, ministry)
 
 system.time(
   ministry_senti_mean <- summarise(senti_ministry,
@@ -237,14 +237,14 @@ ministry_senti_mean$avg_speech_length <- ministry_senti_mean$tot_words/ministry_
 
 summary(ministry_senti_mean)
 
-write_csv(ministry_senti_mean, "summaries/ministry-senti-mean-V24.csv")
+write_csv(ministry_senti_mean, "summaries/ministry-senti-mean-V241.csv")
 
 rm(senti_ministry)
 
 
 ## Year --------
 
-senti_year <- group_by(hansard_senti_post_V24, year)
+senti_year <- group_by(hansard_senti_post_V241, year)
 
 system.time(
   year_senti_mean <- summarise(senti_year,
@@ -277,16 +277,16 @@ year_senti_mean$avg_speech_length <- year_senti_mean$tot_words/year_senti_mean$t
 
 summary(year_senti_mean)
 
-write_csv(year_senti_mean, "summaries/year-senti-mean-V24.csv")
+write_csv(year_senti_mean, "summaries/year-senti-mean-V241.csv")
 
 rm(senti_year)
 
 
 ## Quarter --------
 
-hansard_senti_post_V24$quarter <-  lubridate::quarter(hansard_senti_post_V24$speech_date, with_year = TRUE)
+hansard_senti_post_V241$quarter <-  lubridate::quarter(hansard_senti_post_V241$speech_date, with_year = TRUE)
 
-senti_quarter <- group_by(hansard_senti_post_V24, quarter)
+senti_quarter <- group_by(hansard_senti_post_V241, quarter)
 
 system.time(
   quarter_senti_mean <- summarise(senti_quarter,
@@ -319,15 +319,15 @@ quarter_senti_mean$avg_speech_length <- quarter_senti_mean$tot_words/quarter_sen
 
 summary(quarter_senti_mean)
 
-write_csv(quarter_senti_mean, "summaries/quarter-senti-mean-V24.csv")
+write_csv(quarter_senti_mean, "summaries/quarter-senti-mean-V241.csv")
 
 rm(senti_quarter)
 
 ## Month --------
 
-hansard_senti_post_V24$month <-  format(as.Date(hansard_senti_post_V24$speech_date), "%Y-%m")
+hansard_senti_post_V241$month <-  format(as.Date(hansard_senti_post_V241$speech_date), "%Y-%m")
 
-senti_month <- group_by(hansard_senti_post_V24, month)
+senti_month <- group_by(hansard_senti_post_V241, month)
 
 system.time(
   month_senti_mean <- summarise(senti_month,
@@ -360,34 +360,34 @@ month_senti_mean$avg_speech_length <- month_senti_mean$tot_words/month_senti_mea
 
 summary(month_senti_mean)
 
-write_csv(month_senti_mean, "summaries/month-senti-mean-V24.csv")
+write_csv(month_senti_mean, "summaries/month-senti-mean-V241.csv")
 
 rm(senti_month)
 
 
 list_of_datasets <- list("gov_senti_mean" = gov_senti_mean, "party_group_senti_mean" = party_group_senti_mean, "party_senti_mean"= party_senti_mean, "gender_senti_mean" = gender_senti_mean, "mp_senti_mean" = mp_senti_mean, "ministry_senti_mean"=ministry_senti_mean, "year_senti_mean"=year_senti_mean,"quarter_senti_mean"=quarter_senti_mean,  "month_senti_mean"=month_senti_mean)
 
-write.xlsx(list_of_datasets, file = "summaries/hansard-summary-stats-V24.xlsx")
+write.xlsx(list_of_datasets, file = "summaries/hansard-summary-stats-V241.xlsx")
 
-#hansard_senti_post_V24$eo_id <- row.names(hansard_senti_post_V24)
+#hansard_senti_post_V241$eo_id <- row.names(hansard_senti_post_V241)
 
-hansard_senti_post_V24$quarter <- NULL
+hansard_senti_post_V241$quarter <- NULL
 
-hansard_senti_post_V24$month <- NULL 
+hansard_senti_post_V241$month <- NULL 
 
-#hansard_senti_post_V24$speech_date <- as.Date(hansard_senti_post_V24$speech_date)
+#hansard_senti_post_V241$speech_date <- as.Date(hansard_senti_post_V241$speech_date)
 
 # library(lubridate)
-# age <- function(dob, age.day = hansard_senti_post_V24$speech_date, units = "years", floor = TRUE) {
+# age <- function(dob, age.day = hansard_senti_post_V241$speech_date, units = "years", floor = TRUE) {
 #    calc.age = interval(dob, age.day)/duration(num = 1, units = units)
 #    if (floor)
 #      return(as.integer(floor(calc.age)))
 #    return(calc.age)
 #  }
 # 
-# hansard_senti_post_V24$age <- age(hansard_senti_post_V24$date_of_birth)
+# hansard_senti_post_V241$age <- age(hansard_senti_post_V241$date_of_birth)
 # 
-# hansard_senti_post_V24 <- hansard_senti_post_V24[c("pp_id",
+# hansard_senti_post_V241 <- hansard_senti_post_V241[c("pp_id",
 #                                                    "eo_id",
 #                                                    "colnum",
 #                                                    "speech",
@@ -427,16 +427,16 @@ hansard_senti_post_V24$month <- NULL
 
 
 system.time(
-  hansard_senti_post_V24$pp_id <- gsub("uk.or.publicwhip/debate/", "", hansard_senti_post_V24$pp_id)
+  hansard_senti_post_V241$pp_id <- gsub("uk.or.publicwhip/debate/", "", hansard_senti_post_V241$pp_id)
 )
 
-write_rds(hansard_senti_post_V24, "hansard_senti_post_V24.rds")
+write_rds(hansard_senti_post_V241, "hansard_senti_post_V241.rds")
 
-write_csv(hansard_senti_post_V24, "hansard_senti_post_V24.csv")
+write_csv(hansard_senti_post_V241, "hansard_senti_post_V241.csv")
 
-eo_idpre <- nrow(hansard_senti_post_V24)
+eo_idpre <- nrow(hansard_senti_post_V241)
 
-rm(hansard_senti_post_V24)
+rm(hansard_senti_post_V241)
 
 gc()
 gc()
@@ -444,13 +444,13 @@ gc()
 gc()
 
 
-hansard_senti_pre_V24 <- read_rds("senti_pre.rds")
+hansard_senti_pre_V241 <- read_rds("senti_pre.rds")
 
-hansard_senti_pre_V24$eo_id <- as.character(as.numeric(row.names(hansard_senti_pre_V24))+eo_idpre)
+hansard_senti_pre_V241$eo_id <- as.character(as.numeric(row.names(hansard_senti_pre_V241))+eo_idpre)
 
-#write_csv(hansard_senti_pre_V24, "hansard_senti_pre_V24.csv")
+#write_csv(hansard_senti_pre_V241, "hansard_senti_pre_V241.csv")
 
-write_rds(hansard_senti_pre_V24, "hansard_senti_pre_V24.rds")
+write_rds(hansard_senti_pre_V241, "hansard_senti_pre_V241.rds")
 
 
 
