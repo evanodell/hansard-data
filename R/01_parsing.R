@@ -138,6 +138,24 @@ for(j in look_list){
   
   debate$speech <- gsub(" V. A. T. ", " VAT ", debate$speech) 
   
+  debate$speech <- gsub(" officals ", " officials ", debate$speech) 
+  
+  debate$speech <- gsub(" inThe ", " in The ", debate$speech) 
+  
+  debate$speech <- gsub(" Guardiantoday ", " Guardian today ", debate$speech) 
+  
+  debate$speech <- gsub(" possibily ", " possibly ", debate$speech) 
+  
+  debate$speech <- gsub(" parternship ", " partnership ", debate$speech)  
+   
+  debate$speech <- gsub(" die ort retiring ", " die prior to retiring ", debate$speech) 
+  
+  debate$speech <- gsub(" It slates: ", " It states: ", debate$speech) 
+	
+  debate$speech <- gsub(" imediately ", " immediately ", debate$speech) 
+   
+  debate$speech <- gsub(" attttendance ", " attendance ", debate$speech)  
+
   debate$speech <- gsub("½", ".5", debate$speech)
   
   debate$speech <- gsub("¾", ".75", debate$speech)
