@@ -14,7 +14,8 @@ pacman::p_load(lubridate)
 
 #To do this, data must have already been downloaded from the parlparse service. I did this analysis on a small underpowered laptop, and more conventional methods of parsing all the XML files at once were crashing far too frequently.
 
-look_list <- list("1", "2","3","4","5","6","7","8",'9',"0", "1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "0a", "b", "c", "d", "e", "f", "g")
+look_list <- list(#"1", "2","3","4","5","6","7","8",'9',"0", 
+                  "1a", "2a", "3a", "4a", "5a", "6a", "7a", "8a", "9a", "0a", "b", "c", "d", "e", "f", "g", "h")
 
 
 name_match <- c("speaker", "chairman")
@@ -25,8 +26,8 @@ clean_fun <- function(htmlString) { ### Function to strip out HTML
 
 pb1 <- progress_bar$new(total = length(look_list))
 
-for(j in look_list){
-  atemp <- list.files(path ="/Users/evanodell/Documents/scrapedxml/debates/", pattern = paste0("*", j, ".xml"))
+#for(j in look_list){
+  atemp <- list.files(path ="/Users/evanodell/Documents/scrapedxml/debates/", pattern = paste0("*.xml"))
   dat <- vector("list", length(atemp))
   pb <- progress_bar$new(total = length(atemp))
   
@@ -59,113 +60,125 @@ for(j in look_list){
     
   }
   
-  pb1$tick()
+  #pb1$tick()
   
   #debate dfs
   debate <- bind_rows(dat)
   
   debate$speech <- sapply(debate$speech, paste, "\n", sep="")
   
-  #debate$speech <- gsub("[:alpha:][:punct:][:alpha:]", "\\1\\2 \\3", debate$speech)
-  
+  debate$speech <- gsub("[:alpha:][:punct:][:alpha:]", "\\1\\2 \\3", debate$speech)
+
   debate$speech <- gsub(",([[:alpha:]])", ", \\1", debate$speech)
-  
+
   debate$speech <- gsub("\\?([[:alpha:]])", "? \\1", debate$speech)
-  
+
   debate$speech <- gsub("\\.([[:alpha:]])", ". \\1", debate$speech)
-  
+
   debate$speech <- gsub("\\!([[:alpha:]])", "! \\1", debate$speech)
-  
+
   debate$speech <- gsub(":([[:alpha:]])", ": \\1", debate$speech)
-  
+
   debate$speech <- gsub(";([[:alpha:]])", "; \\1", debate$speech)
-  
+
   debate$speech <- gsub("([[:lower:]])\n", "\\1 ", debate$speech)
-  
+
   debate$speech <- gsub(" playa ", " play a ", debate$speech)
-  
+
   debate$speech <- gsub(" orginal ", " original ", debate$speech)
-  
-  debate$speech <- gsub(" inc rease ", " increase ", debate$speech)  
-  
-  debate$speech <- gsub(" enderly ", " elderly ", debate$speech) 
-  
-  debate$speech <- gsub(" poli- cies ", " policies ", debate$speech) 
-  
-  debate$speech <- gsub(" introducting ", " introducing ", debate$speech) 
-  
-  debate$speech <- gsub(" stateament ", " statement ", debate$speech) 
-  
-  debate$speech <- gsub(" govenment ", " government ", debate$speech) 
-  
-  debate$speech <- gsub(" dfficulty ", "difficult", debate$speech) 
-  
-  debate$speech <- gsub(" assesment ", "assessment ", debate$speech) 
-  
-  debate$speech <- gsub(" Secretrary ", " Secretary ", debate$speech) 
-  
-  debate$speech <- gsub(" alowed ", " allowed ", debate$speech) 
-  
-  debate$speech <- gsub(" housng ", " housing ", debate$speech) 
-  
-  debate$speech <- gsub(" rsources ", " resources ", debate$speech) 
-  
-  debate$speech <- gsub(" unlikey ", " unlikely ", debate$speech) 
-  
-  debate$speech <- gsub(" reduncancy ", " redundancy ", debate$speech) 
-  
-  debate$speech <- gsub(" potentional ", " potential ", debate$speech) 
-  
-  debate$speech <- gsub(" improvment ", " improvement ", debate$speech) 
-  
-  debate$speech <- gsub(" prefessional ", " professional ", debate$speech) 
-  
-  debate$speech <- gsub(" entited ", " entitled ", debate$speech) 
-  
-  debate$speech <- gsub(" wil ", " will ", debate$speech) 
-  
-  debate$speech <- gsub(" somehing ", " something ", debate$speech) 
-  
-  debate$speech <- gsub(" unplublicised ", " unpublicised ", debate$speech) 
-  
-  debate$speech <- gsub(" adminster ", " administer ", debate$speech) 
-  
-  debate$speech <- gsub(" concensus ", " consensus ", debate$speech) 
-  
-  debate$speech <- gsub(" damagiang ", " damaging ", debate$speech) 
-  
-  debate$speech <- gsub(" O. A. P. s. ", " OAPs ", debate$speech) 
-  
-  debate$speech <- gsub(" V. A. T. ", " VAT ", debate$speech) 
-  
-  debate$speech <- gsub(" officals ", " officials ", debate$speech) 
-  
-  debate$speech <- gsub(" inThe ", " in The ", debate$speech) 
-  
-  debate$speech <- gsub(" Guardiantoday ", " Guardian today ", debate$speech) 
-  
-  debate$speech <- gsub(" possibily ", " possibly ", debate$speech) 
-  
-  debate$speech <- gsub(" parternship ", " partnership ", debate$speech)  
-   
-  debate$speech <- gsub(" die ort retiring ", " die prior to retiring ", debate$speech) 
-  
-  debate$speech <- gsub(" It slates: ", " It states: ", debate$speech) 
-	
-  debate$speech <- gsub(" imediately ", " immediately ", debate$speech) 
-   
-  debate$speech <- gsub(" attttendance ", " attendance ", debate$speech)  
+
+  debate$speech <- gsub(" inc rease ", " increase ", debate$speech)
+
+  debate$speech <- gsub(" enderly ", " elderly ", debate$speech)
+
+  debate$speech <- gsub(" poli- cies ", " policies ", debate$speech)
+
+  debate$speech <- gsub(" introducting ", " introducing ", debate$speech)
+
+  debate$speech <- gsub(" stateament ", " statement ", debate$speech)
+
+  debate$speech <- gsub(" govenment ", " government ", debate$speech)
+
+  debate$speech <- gsub(" dfficulty ", "difficult", debate$speech)
+
+  debate$speech <- gsub(" assesment ", "assessment ", debate$speech)
+
+  debate$speech <- gsub(" Secretrary ", " Secretary ", debate$speech)
+
+  debate$speech <- gsub(" alowed ", " allowed ", debate$speech)
+
+  debate$speech <- gsub(" housng ", " housing ", debate$speech)
+
+  debate$speech <- gsub(" rsources ", " resources ", debate$speech)
+
+  debate$speech <- gsub(" unlikey ", " unlikely ", debate$speech)
+
+  debate$speech <- gsub(" reduncancy ", " redundancy ", debate$speech)
+
+  debate$speech <- gsub(" potentional ", " potential ", debate$speech)
+
+  debate$speech <- gsub(" improvment ", " improvement ", debate$speech)
+
+  debate$speech <- gsub(" prefessional ", " professional ", debate$speech)
+
+  debate$speech <- gsub(" entited ", " entitled ", debate$speech)
+
+  debate$speech <- gsub(" wil ", " will ", debate$speech)
+
+  debate$speech <- gsub(" somehing ", " something ", debate$speech)
+
+  debate$speech <- gsub(" unplublicised ", " unpublicised ", debate$speech)
+
+  debate$speech <- gsub(" adminster ", " administer ", debate$speech)
+
+  debate$speech <- gsub(" concensus ", " consensus ", debate$speech)
+
+  debate$speech <- gsub(" damagiang ", " damaging ", debate$speech)
+
+  debate$speech <- gsub(" O. A. P. s. ", " OAPs ", debate$speech)
+
+  debate$speech <- gsub(" V. A. T. ", " VAT ", debate$speech)
+
+  debate$speech <- gsub(" officals ", " officials ", debate$speech)
+
+  debate$speech <- gsub(" inThe ", " in The ", debate$speech)
+
+  debate$speech <- gsub(" Guardiantoday ", " Guardian today ", debate$speech)
+
+  debate$speech <- gsub(" possibily ", " possibly ", debate$speech)
+
+  debate$speech <- gsub(" parternship ", " partnership ", debate$speech)
+
+  debate$speech <- gsub(" die ort retiring ", " die prior to retiring ", debate$speech)
+
+  debate$speech <- gsub(" It slates: ", " It states: ", debate$speech)
+
+  debate$speech <- gsub(" imediately ", " immediately ", debate$speech)
+
+  debate$speech <- gsub(" attttendance ", " attendance ", debate$speech)
+
+  debate$speech <- gsub(" itßžis", " it is", debate$speech)
+
+  debate$speech <- gsub(" goßžto", " go to", debate$speech)
+
+  debate$speech <- gsub(" impor tance", " importance", debate$speech)
+
+  debate$speech <- gsub(" educa tion", " education", debate$speech)
+
+  debate$speech <- gsub(" edu cation", " education", debate$speech)
+
+  debate$speech <- gsub(" recog nises", " recognises", debate$speech)
 
   debate$speech <- gsub("½", ".5", debate$speech)
-  
+
   debate$speech <- gsub("¾", ".75", debate$speech)
-  
+
   debate$speech <- gsub("¼", ".25", debate$speech)
-  
+
   debate$speech <- gsub("·", ".", debate$speech)
-  
+
   debate$speech <- gsub("\n\n", " ", debate$speech)
-  
+
   debate$speech <- gsub("  ", " ", debate$speech)
   
   debate$pp_id2 <- gsub("a\\.", ".", debate$pp_id)
@@ -196,9 +209,15 @@ for(j in look_list){
   
   debate$speech_date <- gsub("uk.or.publicwhip/debate/", "", debate$pp_id)
   
+  debate$speech_date <- gsub("uk.org.publicwhip/debate/", "", debate$pp_id)
+  
   debate$speaker_id <- gsub("uk.or.publicwhip/member/", "", debate$speaker_id)
   
   debate$person_id <- gsub("uk.or.publicwhip/person/", "", debate$person_id)
+  
+  debate$speaker_id <- gsub("uk.org.publicwhip/member/", "", debate$speaker_id)
+  
+  debate$person_id <- gsub("uk.org.publicwhip/person/", "", debate$person_id)
   
   debate$speech_date <-  str_sub(debate$speech_date,1,10)
   
@@ -208,51 +227,15 @@ for(j in look_list){
   
   debate$year <- year(debate$speech_date) ### Year variable
   
-  write_rds(debate, path = save_name)
+  write_rds(debate, path = "debate-2017.rds")
   
   rm(save_name, debate, dat)
   
   gc()## garbage collection to hopefully speed things up a bit
   
-}
+#}
 
 rm(list=ls())
-
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-gc()
-
-gc()
 
 gc()
 

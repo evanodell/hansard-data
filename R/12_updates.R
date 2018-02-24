@@ -284,6 +284,11 @@ write_csv(crossers2, "crossers2.csv")
 
 senti_df2 <- bind_rows(crossers, stayers)
 
+
+
+
+### for 2.4.2
+
 senti_df_nrow_crossed <- nrow(senti_df)
 
 rm(crossers,crossers2, stayers, switchers,dropping,fac1,pat1,senti_df_nrow,senti_post2_nrow,senti_df_nrow_crossed)
@@ -324,4 +329,88 @@ update <- read_rds("senti_df2.rds")
 system.time(
   senti_df <- read_rds("senti_df.rds")
 )
+
+
+
+
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==1224] <- as.POSIXct("1987-06-11")
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==4084] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==534] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==3976] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==188] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==252] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==3968] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==1513] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==382] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==450] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==207] <- NA
+
+hansard_senti_post_V242$house_end_date[hansard_senti_post_V242$mnis_id==4062] <- NA
+
+date_check <- hansard_senti_post_V242[hansard_senti_post_V242$speech_date > hansard_senti_post_V242$house_end_date
+                                      & is.na(hansard_senti_post_V242$house_end_date)==FALSE,]
+
+
+
+date_check$proper_name <- as.factor(as.character(date_check$proper_name))
+
+summary(date_check$proper_name)
+
+date_check$mnis_id[date_check$mnis_id==1300] <- 960
+
+date_check$mnis_id[date_check$mnis_id==3326] <- 770
+
+date_check$mnis_id[date_check$mnis_id==769] <- 770
+
+date_check$mnis_id[date_check$mnis_id==1100] <- 308
+
+date_check$mnis_id[date_check$mnis_id==536] <- 569
+
+date_check$mnis_id[date_check$mnis_id==30] <- 1564
+
+date_check$mnis_id[date_check$mnis_id==1314] <- 1556
+
+date_check$mnis_id[date_check$mnis_id==716] <- 1213
+
+date_check$speech_date[date_check$mnis_id==1300] <- as.Date("1983-02-13")
+
+test2 <- hansard_senti_post_V242[!(hansard_senti_post_V242$eo_id %in% date_check$eo_id),]
+
+#test2 <- senti_df[senti_df$proper_name=="Jim Cunningham",]
+drop_list <- c("proper_name",	"house_start_date",	"house_end_date",	"date_of_birth",	"gender",	"party",	"dods_id",	"pims_id")
+date_check <- date_check[, !colnames(date_check) %in% drop_list]
+#date_check$mnis_id <- ifelse(date_check$speech_date >= "1983-06-09" && date_check$proper_name=="George Cunningham", 308, date_check$mnis_id)
+
+
+summary(date_check$mnis_id)
+
+elect2 <- readxl::read_excel("~/Documents/GitHub/hansard-data/elect2.xlsx")
+date_check <- dplyr::left_join(date_check, elect2, by= "mnis_id")
+
+summary(date_check$house_start_date)
+date_check$date_of_birth <- as.Date(date_check$date_of_birth)
+date_check$house_start_date <- as.Date(date_check$house_start_date)
+date_check$house_end_date <- as.Date(date_check$house_end_date)
+summary(date_check$speech_date)
+rm(hansard_senti_post_V242)
+hansard_senti_post_V242 <- dplyr::bind_rows(date_check, test2)
+
+date_check2 <- hansard_senti_post_V242[hansard_senti_post_V242$speech_date > hansard_senti_post_V242$house_end_date
+                                       & is.na(hansard_senti_post_V242$house_end_date)==FALSE,]
+
+
+
+
+
 

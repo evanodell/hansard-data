@@ -2,32 +2,32 @@
 
 library(readr)
 library(dplyr)
-system.time(senti_post <- read_rds("senti_post.rds"))
+system.time(hansard_senti_post_V242 <- read_rds("hansard_senti_post_V242.rds"))
 
-senti_post_nrow <- nrow(senti_post)
+hansard_senti_post_V242_nrow <- nrow(hansard_senti_post_V242)
 
-senti_post$speech_date <- as.Date(senti_post$speech_date)
+hansard_senti_post_V242$speech_date <- as.Date(hansard_senti_post_V242$speech_date)
 
-senti_post$house <- NULL
+hansard_senti_post_V242$house <- NULL
 
 # Post 1979 Election Labelling --------
-Thatcher1 <- subset(senti_post, speech_date >= "1979-05-04" & speech_date < "1983-06-09")
-Thatcher2 <- subset(senti_post, speech_date >= "1983-06-09" & speech_date < "1987-06-11")
-Thatcher3 <- subset(senti_post, speech_date >= "1987-06-11" & speech_date < "1990-11-28")
-Major1 <- subset(senti_post, speech_date >= "1990-11-28" & speech_date < "1992-04-10")
-Major2 <- subset(senti_post, speech_date >= "1992-04-10" & speech_date < "1997-05-02")
-Blair1 <- subset(senti_post, speech_date >= "1997-05-02" & speech_date < "2001-06-07")
-Blair2 <- subset(senti_post, speech_date >= "2001-06-07"& speech_date < "2005-05-05")
-Blair3 <- subset(senti_post, speech_date >= "2005-05-05"& speech_date < "2007-06-27")
-Brown <- subset(senti_post, speech_date >= "2007-06-27" & speech_date < "2010-05-11")
-Cameron1 <- subset(senti_post, speech_date >= "2010-05-11" & speech_date < "2015-05-08")
-Cameron2 <- subset(senti_post, speech_date >= "2015-05-08" & speech_date < "2016-07-13")
-May1 <- subset(senti_post, speech_date >= "2016-07-13" & speech_date < "2017-06-07")
-May2 <- subset(senti_post, speech_date >= "2017-06-08")
+Thatcher1 <- subset(hansard_senti_post_V242, speech_date >= "1979-05-04" & speech_date < "1983-06-09")
+Thatcher2 <- subset(hansard_senti_post_V242, speech_date >= "1983-06-09" & speech_date < "1987-06-11")
+Thatcher3 <- subset(hansard_senti_post_V242, speech_date >= "1987-06-11" & speech_date < "1990-11-28")
+Major1 <- subset(hansard_senti_post_V242, speech_date >= "1990-11-28" & speech_date < "1992-04-10")
+Major2 <- subset(hansard_senti_post_V242, speech_date >= "1992-04-10" & speech_date < "1997-05-02")
+Blair1 <- subset(hansard_senti_post_V242, speech_date >= "1997-05-02" & speech_date < "2001-06-07")
+Blair2 <- subset(hansard_senti_post_V242, speech_date >= "2001-06-07"& speech_date < "2005-05-05")
+Blair3 <- subset(hansard_senti_post_V242, speech_date >= "2005-05-05"& speech_date < "2007-06-27")
+Brown <- subset(hansard_senti_post_V242, speech_date >= "2007-06-27" & speech_date < "2010-05-11")
+Cameron1 <- subset(hansard_senti_post_V242, speech_date >= "2010-05-11" & speech_date < "2015-05-08")
+Cameron2 <- subset(hansard_senti_post_V242, speech_date >= "2015-05-08" & speech_date < "2016-07-13")
+May1 <- subset(hansard_senti_post_V242, speech_date >= "2016-07-13" & speech_date < "2017-06-07")
+May2 <- subset(hansard_senti_post_V242, speech_date >= "2017-06-08")
 
-senti_post_nrow <- nrow(senti_post)
+hansard_senti_post_V242_nrow <- nrow(hansard_senti_post_V242)
 
-rm(senti_post)
+rm(hansard_senti_post_V242)
 gc()
 
 
@@ -85,11 +85,11 @@ May1$ministry <- "May1"
 May1$government <- ifelse(May1$party_group == "Conservative",
                           "Government", "Opposition")
 
-senti_post <- bind_rows(Blair1, Blair2, Blair3, Brown, Cameron1, Cameron2, May1, May2, Thatcher1, Thatcher2, Thatcher3, Major1, Major2)
+hansard_senti_post_V242 <- bind_rows(Blair1, Blair2, Blair3, Brown, Cameron1, Cameron2, May1, May2, Thatcher1, Thatcher2, Thatcher3, Major1, Major2)
 
-senti_post_nrow2 <- nrow(senti_post) ## Check that they're still the same length
+hansard_senti_post_V242_nrow2 <- nrow(hansard_senti_post_V242) ## Check that they're still the same length
 
-senti_post_nrow==senti_post_nrow2
+hansard_senti_post_V242_nrow==hansard_senti_post_V242_nrow2
 
 rm(Blair1, Blair2, Blair3, Brown, Cameron1, Cameron2, May1, May2, Thatcher1, Thatcher2, Thatcher3, Major1, Major2)
 
@@ -97,12 +97,12 @@ gc()
 
 fac1 <- c("government", "ministry", "party_group", "party", "proper_name")
 
-senti_post[fac1] <- lapply(senti_post[fac1], factor)
+hansard_senti_post_V242[fac1] <- lapply(hansard_senti_post_V242[fac1], factor)
 
-rm(fac1,senti_post_nrow2,senti_post_nrow)
+rm(fac1,hansard_senti_post_V242_nrow2,hansard_senti_post_V242_nrow)
 
-#senti_post$id <- gsub("uk.org.publicwhip/debate/","",senti_post$id) ### Strip out some extra text to save size
+#hansard_senti_post_V242$id <- gsub("uk.org.publicwhip/debate/","",hansard_senti_post_V242$id) ### Strip out some extra text to save size
 
 system.time(
-  write_rds(senti_post, "hansard_senti_post_V24.rds")
+  write_rds(hansard_senti_post_V242, "hansard_senti_post_V242.rds")
 )

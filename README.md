@@ -30,3 +30,8 @@ The dataset is licensed under a <a rel="license" href="http://creativecommons.or
 The code included in this repository is licensed under an [MIT license](https://github.com/EvanOdell/hansard-speeches-and-sentiment/blob/master/LICENSE).
 
 Please [contact me](mailto:evanodell91@gmail.com) or open an issue here if you find any errors in the dataset. The integrity of the public Hansard record is questionable at times, and while I have improved it, the data is presented 'as is'.
+
+
+## New in 2.4.3
+
+- "Julia Dockerill" name changed to "Julia Lopez" to reflect MP's actual name change
